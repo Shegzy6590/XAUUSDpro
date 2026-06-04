@@ -3,411 +3,239 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XAUUSD · Gold Trading Intelligence</title>
+  <title>XAUUSD · Gold Trading Pro</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
 </head>
 <body>
 
 <!-- HEADER -->
-<header class="site-header">
+<header class="header">
   <div class="header-left">
-    <div class="logo">
-      <span class="logo-icon">◈</span>
-      <span class="logo-text">XAUUSD<em>Pro</em></span>
+    <div class="logo">XAUUSD <span>PRO</span></div>
+    <div class="price-block">
+      <span class="live-price" id="livePrice">—</span>
+      <span class="live-change" id="liveChange">—</span>
     </div>
-    <div class="price-ticker">
-      <span class="ticker-label">GOLD</span>
-      <span class="ticker-price" id="livePrice">3,342.50</span>
-      <span class="ticker-change positive" id="priceChange">+12.30 (+0.37%)</span>
+    <div class="ohlc-inline">
+      <span>O <b id="hO">—</b></span>
+      <span>H <b id="hH" class="bull">—</b></span>
+      <span>L <b id="hL" class="bear">—</b></span>
+      <span>C <b id="hC">—</b></span>
     </div>
   </div>
   <div class="header-right">
-    <div class="header-stat">
-      <span class="hs-label">Spread</span>
-      <span class="hs-val" id="spreadVal">0.30</span>
-    </div>
-    <div class="header-stat">
-      <span class="hs-label">24H High</span>
-      <span class="hs-val bull" id="dayHigh">3,361.80</span>
-    </div>
-    <div class="header-stat">
-      <span class="hs-label">24H Low</span>
-      <span class="hs-val bear" id="dayLow">3,318.40</span>
-    </div>
-    <div class="signal-badge" id="headerSignal">
-      <span class="sb-dot"></span>
-      <span class="sb-text">ANALYZING</span>
-    </div>
-    <div class="current-time" id="currentTime">--:--:--</div>
+    <div class="hstat"><span>Spread</span><b id="hSpread">—</b></div>
+    <div class="hstat"><span>24H Hi</span><b class="bull" id="h24H">—</b></div>
+    <div class="hstat"><span>24H Lo</span><b class="bear" id="h24L">—</b></div>
+    <div class="signal-pill" id="headerPill">● LOADING</div>
+    <div class="utc" id="utcTime">UTC 00:00:00</div>
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
-<main class="app-grid">
+<!-- BODY -->
+<div class="layout">
 
-  <!-- LEFT COLUMN -->
+  <!-- LEFT -->
   <div class="col-left">
 
-    <!-- MARKET OVERVIEW -->
-    <section class="card market-overview">
-      <div class="card-header">
-        <h2>Market Overview</h2>
-        <div class="tf-selector">
-          <button class="tf-btn active" data-tf="M15">15M</button>
-          <button class="tf-btn" data-tf="H1">1H</button>
-          <button class="tf-btn" data-tf="H4">4H</button>
-          <button class="tf-btn" data-tf="D1">D1</button>
-        </div>
-      </div>
-      <div class="ohlc-grid">
-        <div class="ohlc-item">
-          <span class="ohlc-label">Open</span>
-          <span class="ohlc-val" id="ohlcOpen">—</span>
-        </div>
-        <div class="ohlc-item">
-          <span class="ohlc-label">High</span>
-          <span class="ohlc-val bull" id="ohlcHigh">—</span>
-        </div>
-        <div class="ohlc-item">
-          <span class="ohlc-label">Low</span>
-          <span class="ohlc-val bear" id="ohlcLow">—</span>
-        </div>
-        <div class="ohlc-item">
-          <span class="ohlc-label">Close</span>
-          <span class="ohlc-val" id="ohlcClose">—</span>
-        </div>
-      </div>
-    </section>
-
     <!-- CHART -->
-    <section class="card chart-card">
-      <div class="chart-toolbar">
-        <div class="chart-tf-group">
-          <button class="ctf active" data-ctf="M15">15M</button>
-          <button class="ctf" data-ctf="H1">1H</button>
-          <button class="ctf" data-ctf="H4">4H</button>
-          <button class="ctf" data-ctf="D1">D</button>
+    <div class="card chart-card">
+      <div class="chart-top-bar">
+        <div class="tf-group">
+          <button class="tf active" data-tf="15min">15M</button>
+          <button class="tf" data-tf="1h">1H</button>
+          <button class="tf" data-tf="4h">4H</button>
+          <button class="tf" data-tf="1day">D</button>
         </div>
-        <div class="chart-tools">
-          <button class="chart-tool-btn active" id="toolCursor" title="Cursor">⊕</button>
-          <button class="chart-tool-btn" id="toolTrend" title="Trend Line">╱</button>
-          <button class="chart-tool-btn" id="toolHLine" title="Horizontal Line">—</button>
-          <button class="chart-tool-btn" id="toolZoneBtn" title="Zone Box">▭</button>
-        </div>
-        <div class="chart-zoom">
+        <div class="chart-info" id="chartInfo">XAUUSD · Gold Spot</div>
+        <div class="chart-controls">
           <button id="zoomIn">+</button>
           <button id="zoomOut">−</button>
-          <button id="zoomReset" title="Reset">↺</button>
+          <button id="zoomReset">↺</button>
+          <button id="refreshBtn" title="Refresh data">⟳</button>
         </div>
       </div>
-      <div class="chart-wrapper">
-        <canvas id="mainChart"></canvas>
-        <div class="crosshair-info" id="crosshairInfo"></div>
+      <div class="chart-container">
+        <canvas id="chart"></canvas>
+        <div class="crosshair-box" id="crosshairBox"></div>
+        <div class="loading-overlay" id="chartLoader">
+          <div class="spinner"></div>
+          <span>Fetching live data…</span>
+        </div>
       </div>
-      <div class="chart-legend" id="chartLegend">
-        <span class="cl-item">O <span id="legO">—</span></span>
-        <span class="cl-item bull">H <span id="legH">—</span></span>
-        <span class="cl-item bear">L <span id="legL">—</span></span>
-        <span class="cl-item">C <span id="legC">—</span></span>
+      <div class="chart-bottom-bar">
+        <span id="legO">O —</span>
+        <span class="bull" id="legH">H —</span>
+        <span class="bear" id="legL">L —</span>
+        <span id="legC">C —</span>
+        <span id="legV" style="margin-left:auto;color:#555">Vol —</span>
       </div>
-    </section>
+    </div>
 
-    <!-- RECENT CANDLES TABLE -->
-    <section class="card candles-table-card">
-      <div class="card-header">
-        <h2>Recent Candles</h2>
-        <span class="badge" id="candleTF">15M</span>
-      </div>
-      <div class="table-wrap">
-        <table class="candles-table">
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Open</th>
-              <th>High</th>
-              <th>Low</th>
-              <th>Close</th>
-              <th>Dir</th>
-            </tr>
-          </thead>
-          <tbody id="candlesBody"></tbody>
+    <!-- CANDLE TABLE -->
+    <div class="card">
+      <div class="card-title">Recent Candles <span class="badge" id="tableTF">15M</span></div>
+      <div class="table-scroll">
+        <table class="ctable">
+          <thead><tr><th>Time</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>Dir</th></tr></thead>
+          <tbody id="candleBody"></tbody>
         </table>
       </div>
-    </section>
+    </div>
 
     <!-- TRADE LOG -->
-    <section class="card trade-log-card">
-      <div class="card-header">
-        <h2>Trade Journal</h2>
-        <button class="btn-small" id="clearLog">Clear All</button>
-      </div>
-      <div class="trade-log-list" id="tradeLogList">
-        <div class="empty-state">No trades recorded yet.</div>
-      </div>
-    </section>
+    <div class="card">
+      <div class="card-title">Trade Journal <button class="btn-clear" id="clearLog">Clear</button></div>
+      <div class="log-list" id="logList"><div class="empty">No trades logged yet.</div></div>
+    </div>
 
   </div>
 
-  <!-- CENTER COLUMN -->
+  <!-- CENTER -->
   <div class="col-center">
 
-    <!-- SIGNAL PANEL -->
-    <section class="card signal-card">
-      <div class="signal-header">
-        <div class="signal-icon-wrap" id="signalIconWrap">
-          <div class="signal-ring"></div>
-          <span class="signal-main-icon" id="signalMainIcon">◈</span>
-        </div>
-        <div class="signal-meta">
-          <div class="signal-label">Signal</div>
-          <div class="signal-value" id="signalValue">ANALYZING...</div>
-          <div class="confidence-wrap">
-            <div class="conf-bar-bg">
-              <div class="conf-bar-fill" id="confBarFill"></div>
-            </div>
-            <span class="conf-pct" id="confPct">—%</span>
+    <!-- SIGNAL -->
+    <div class="card signal-card" id="signalCard">
+      <div class="signal-top">
+        <div class="sig-icon" id="sigIcon">◈</div>
+        <div class="sig-body">
+          <div class="sig-label">SIGNAL</div>
+          <div class="sig-value" id="sigValue">ANALYZING</div>
+          <div class="conf-row">
+            <div class="conf-track"><div class="conf-fill" id="confFill"></div></div>
+            <span id="confPct">—</span>
           </div>
         </div>
       </div>
-      <div class="signal-grid">
-        <div class="sg-item">
-          <span class="sg-label">Entry</span>
-          <span class="sg-val gold" id="sigEntry">—</span>
-        </div>
-        <div class="sg-item">
-          <span class="sg-label">Stop Loss</span>
-          <span class="sg-val bear" id="sigSL">—</span>
-        </div>
-        <div class="sg-item">
-          <span class="sg-label">Take Profit</span>
-          <span class="sg-val bull" id="sigTP">—</span>
-        </div>
-        <div class="sg-item">
-          <span class="sg-label">Risk:Reward</span>
-          <span class="sg-val" id="sigRR">—</span>
-        </div>
-        <div class="sg-item">
-          <span class="sg-label">SL Pips</span>
-          <span class="sg-val bear" id="sigSLPips">—</span>
-        </div>
-        <div class="sg-item">
-          <span class="sg-label">TP Pips</span>
-          <span class="sg-val bull" id="sigTPPips">—</span>
-        </div>
+      <div class="sig-grid">
+        <div class="sg"><span>Entry</span><b id="sEntry">—</b></div>
+        <div class="sg"><span>Stop Loss</span><b class="bear" id="sSL">—</b></div>
+        <div class="sg"><span>Take Profit</span><b class="bull" id="sTP">—</b></div>
+        <div class="sg"><span>Risk:Reward</span><b id="sRR">—</b></div>
+        <div class="sg"><span>SL Pips</span><b class="bear" id="sSLp">—</b></div>
+        <div class="sg"><span>TP Pips</span><b class="bull" id="sTPp">—</b></div>
       </div>
-      <button class="btn-log-trade" id="logTradeBtn">+ Log This Trade</button>
-    </section>
+      <button class="btn-log" id="btnLog">+ Log This Trade</button>
+    </div>
 
-    <!-- TREND ANALYSIS (MTF) -->
-    <section class="card mtf-card">
-      <div class="card-header"><h2>Multi-Timeframe Trend</h2></div>
-      <div class="mtf-grid">
-        <div class="mtf-row" id="mtfD1">
-          <span class="mtf-tf">D1</span>
-          <div class="mtf-bar-wrap"><div class="mtf-bar" style="width:0%"></div></div>
-          <span class="mtf-trend">—</span>
-          <span class="mtf-badge">—</span>
-        </div>
-        <div class="mtf-row" id="mtfH4">
-          <span class="mtf-tf">H4</span>
-          <div class="mtf-bar-wrap"><div class="mtf-bar" style="width:0%"></div></div>
-          <span class="mtf-trend">—</span>
-          <span class="mtf-badge">—</span>
-        </div>
-        <div class="mtf-row" id="mtfH1">
-          <span class="mtf-tf">H1</span>
-          <div class="mtf-bar-wrap"><div class="mtf-bar" style="width:0%"></div></div>
-          <span class="mtf-trend">—</span>
-          <span class="mtf-badge">—</span>
-        </div>
-        <div class="mtf-row" id="mtfM15">
-          <span class="mtf-tf">M15</span>
-          <div class="mtf-bar-wrap"><div class="mtf-bar" style="width:0%"></div></div>
-          <span class="mtf-trend">—</span>
-          <span class="mtf-badge">—</span>
-        </div>
+    <!-- MTF TREND -->
+    <div class="card">
+      <div class="card-title">Multi-Timeframe Analysis</div>
+      <div class="mtf-list">
+        <div class="mtf-row" id="mD1"><span class="mtf-tf">D1</span><div class="mtf-track"><div class="mtf-fill"></div></div><span class="mtf-lbl">—</span><span class="mtf-tag">—</span></div>
+        <div class="mtf-row" id="mH4"><span class="mtf-tf">H4</span><div class="mtf-track"><div class="mtf-fill"></div></div><span class="mtf-lbl">—</span><span class="mtf-tag">—</span></div>
+        <div class="mtf-row" id="mH1"><span class="mtf-tf">H1</span><div class="mtf-track"><div class="mtf-fill"></div></div><span class="mtf-lbl">—</span><span class="mtf-tag">—</span></div>
+        <div class="mtf-row" id="mM15"><span class="mtf-tf">M15</span><div class="mtf-track"><div class="mtf-fill"></div></div><span class="mtf-lbl">—</span><span class="mtf-tag">—</span></div>
       </div>
-      <div class="alignment-pill" id="alignPill">Calculating alignment…</div>
-    </section>
+      <div class="align-bar" id="alignBar">Calculating…</div>
+    </div>
 
     <!-- MARKET STRUCTURE -->
-    <section class="card structure-card">
-      <div class="card-header"><h2>Market Structure</h2></div>
-      <div class="structure-grid">
-        <div class="struct-item" id="sHH"><span class="struct-icon">↑</span><span class="struct-label">Higher High</span><span class="struct-val">—</span></div>
-        <div class="struct-item" id="sHL"><span class="struct-icon">↗</span><span class="struct-label">Higher Low</span><span class="struct-val">—</span></div>
-        <div class="struct-item" id="sLH"><span class="struct-icon">↘</span><span class="struct-label">Lower High</span><span class="struct-val">—</span></div>
-        <div class="struct-item" id="sLL"><span class="struct-icon">↓</span><span class="struct-label">Lower Low</span><span class="struct-val">—</span></div>
-        <div class="struct-item" id="sBOS"><span class="struct-icon">⚡</span><span class="struct-label">Break of Structure</span><span class="struct-val">—</span></div>
-        <div class="struct-item" id="sCHOCH"><span class="struct-icon">🔄</span><span class="struct-label">Change of Character</span><span class="struct-val">—</span></div>
+    <div class="card">
+      <div class="card-title">Market Structure</div>
+      <div class="struct-grid">
+        <div class="struct-item" id="stHH"><span>↑</span><label>Higher High</label><b>—</b></div>
+        <div class="struct-item" id="stHL"><span>↗</span><label>Higher Low</label><b>—</b></div>
+        <div class="struct-item" id="stLH"><span>↘</span><label>Lower High</label><b>—</b></div>
+        <div class="struct-item" id="stLL"><span>↓</span><label>Lower Low</label><b>—</b></div>
+        <div class="struct-item" id="stBOS"><span>⚡</span><label>Break of Structure</label><b>—</b></div>
+        <div class="struct-item" id="stCH"><span>↺</span><label>Change of Character</label><b>—</b></div>
       </div>
-    </section>
+    </div>
 
     <!-- SUPPLY & DEMAND -->
-    <section class="card zones-card">
-      <div class="card-header"><h2>Supply &amp; Demand Zones</h2></div>
-      <div class="zones-container">
-        <div class="zone-group">
-          <div class="zone-group-title bear">SUPPLY ZONES</div>
-          <div id="supplyZones" class="zone-list"></div>
+    <div class="card">
+      <div class="card-title">Supply &amp; Demand Zones</div>
+      <div class="zones-wrap">
+        <div class="zone-col">
+          <div class="zone-head bear">SUPPLY</div>
+          <div id="supplyList"></div>
         </div>
-        <div class="zone-divider"></div>
-        <div class="zone-group">
-          <div class="zone-group-title bull">DEMAND ZONES</div>
-          <div id="demandZones" class="zone-list"></div>
+        <div class="zone-sep"></div>
+        <div class="zone-col">
+          <div class="zone-head bull">DEMAND</div>
+          <div id="demandList"></div>
         </div>
       </div>
-    </section>
+    </div>
 
   </div>
 
-  <!-- RIGHT COLUMN -->
+  <!-- RIGHT -->
   <div class="col-right">
 
     <!-- SESSIONS -->
-    <section class="card sessions-card">
-      <div class="card-header"><h2>Market Sessions</h2><span class="utc-clock" id="utcClock">UTC 00:00:00</span></div>
-      <div class="sessions-list">
-        <div class="session-item" id="sessSydney">
-          <div class="sess-left">
-            <div class="sess-dot"></div>
-            <div class="sess-info">
-              <div class="sess-name">Sydney</div>
-              <div class="sess-time">22:00 – 07:00 UTC</div>
-            </div>
-          </div>
-          <div class="sess-right">
-            <div class="sess-status">—</div>
-            <div class="sess-countdown" id="cdSydney">—</div>
-          </div>
+    <div class="card">
+      <div class="card-title">Market Sessions</div>
+      <div class="sess-list">
+        <div class="sess-row" id="sSydney">
+          <div class="sess-dot"></div>
+          <div class="sess-info"><div class="sess-name">Sydney</div><div class="sess-hours">22:00–07:00 UTC</div></div>
+          <div class="sess-right"><div class="sess-status">CLOSED</div><div class="sess-cd" id="cdSydney">—</div></div>
         </div>
-        <div class="session-item" id="sessTokyo">
-          <div class="sess-left">
-            <div class="sess-dot"></div>
-            <div class="sess-info">
-              <div class="sess-name">Tokyo</div>
-              <div class="sess-time">00:00 – 09:00 UTC</div>
-            </div>
-          </div>
-          <div class="sess-right">
-            <div class="sess-status">—</div>
-            <div class="sess-countdown" id="cdTokyo">—</div>
-          </div>
+        <div class="sess-row" id="sTokyo">
+          <div class="sess-dot"></div>
+          <div class="sess-info"><div class="sess-name">Tokyo</div><div class="sess-hours">00:00–09:00 UTC</div></div>
+          <div class="sess-right"><div class="sess-status">CLOSED</div><div class="sess-cd" id="cdTokyo">—</div></div>
         </div>
-        <div class="session-item" id="sessLondon">
-          <div class="sess-left">
-            <div class="sess-dot"></div>
-            <div class="sess-info">
-              <div class="sess-name">London</div>
-              <div class="sess-time">08:00 – 17:00 UTC</div>
-            </div>
-          </div>
-          <div class="sess-right">
-            <div class="sess-status">—</div>
-            <div class="sess-countdown" id="cdLondon">—</div>
-          </div>
+        <div class="sess-row" id="sLondon">
+          <div class="sess-dot"></div>
+          <div class="sess-info"><div class="sess-name">London</div><div class="sess-hours">08:00–17:00 UTC</div></div>
+          <div class="sess-right"><div class="sess-status">CLOSED</div><div class="sess-cd" id="cdLondon">—</div></div>
         </div>
-        <div class="session-item" id="sessNewYork">
-          <div class="sess-left">
-            <div class="sess-dot"></div>
-            <div class="sess-info">
-              <div class="sess-name">New York</div>
-              <div class="sess-time">13:00 – 22:00 UTC</div>
-            </div>
-          </div>
-          <div class="sess-right">
-            <div class="sess-status">—</div>
-            <div class="sess-countdown" id="cdNewYork">—</div>
-          </div>
+        <div class="sess-row" id="sNewYork">
+          <div class="sess-dot"></div>
+          <div class="sess-info"><div class="sess-name">New York</div><div class="sess-hours">13:00–22:00 UTC</div></div>
+          <div class="sess-right"><div class="sess-status">CLOSED</div><div class="sess-cd" id="cdNewYork">—</div></div>
         </div>
       </div>
-      <div class="overlap-bar" id="overlapBar">
-        <span class="overlap-label">No Active Overlap</span>
-      </div>
-    </section>
+      <div class="overlap-strip" id="overlapStrip">No active overlap</div>
+    </div>
 
     <!-- PIP CALCULATOR -->
-    <section class="card pip-calc-card">
-      <div class="card-header"><h2>Pip Calculator</h2></div>
-      <div class="calc-inputs">
-        <div class="ci-row">
-          <label>Entry Price</label>
-          <input type="number" id="calcEntry" placeholder="3350.00" step="0.01" />
-        </div>
-        <div class="ci-row">
-          <label>Stop Loss</label>
-          <input type="number" id="calcSL" placeholder="3345.00" step="0.01" />
-        </div>
-        <div class="ci-row">
-          <label>Take Profit</label>
-          <input type="number" id="calcTP" placeholder="3365.00" step="0.01" />
-        </div>
-        <div class="ci-row">
-          <label>Account Size ($)</label>
-          <input type="number" id="calcAccount" placeholder="10000" step="100" />
-        </div>
-        <div class="ci-row">
-          <label>Risk %</label>
-          <input type="number" id="calcRisk" placeholder="1" step="0.1" min="0.1" max="10" />
-        </div>
-        <div class="ci-row">
-          <label>Lot Size</label>
-          <input type="number" id="calcLot" placeholder="0.01" step="0.01" />
-        </div>
+    <div class="card">
+      <div class="card-title">Pip Calculator</div>
+      <div class="calc-form">
+        <div class="cf-row"><label>Entry</label><input type="number" id="cEntry" placeholder="3350.00" step="0.01"/></div>
+        <div class="cf-row"><label>Stop Loss</label><input type="number" id="cSL" placeholder="3345.00" step="0.01"/></div>
+        <div name="cf-row" class="cf-row"><label>Take Profit</label><input type="number" id="cTP" placeholder="3365.00" step="0.01"/></div>
+        <div class="cf-row"><label>Account ($)</label><input type="number" id="cAcc" placeholder="10000" step="100"/></div>
+        <div class="cf-row"><label>Risk %</label><input type="number" id="cRisk" placeholder="1" step="0.1"/></div>
       </div>
-      <button class="btn-calc" id="calcBtn">Calculate</button>
-      <div class="calc-results" id="calcResults">
-        <div class="cr-item"><span>Risk Pips</span><span class="cr-val bear" id="crRiskPips">—</span></div>
-        <div class="cr-item"><span>Reward Pips</span><span class="cr-val bull" id="crRewardPips">—</span></div>
-        <div class="cr-item"><span>Risk:Reward</span><span class="cr-val gold" id="crRR">—</span></div>
-        <div class="cr-item"><span>$ Risk</span><span class="cr-val bear" id="crDollarRisk">—</span></div>
-        <div class="cr-item"><span>$ Reward</span><span class="cr-val bull" id="crDollarReward">—</span></div>
-        <div class="cr-item"><span>Lot Size</span><span class="cr-val" id="crLotSize">—</span></div>
+      <button class="btn-calc" id="btnCalc">CALCULATE</button>
+      <div class="calc-out">
+        <div class="co-row"><span>Risk Pips</span><b class="bear" id="coRP">—</b></div>
+        <div class="co-row"><span>Reward Pips</span><b class="bull" id="coRwP">—</b></div>
+        <div class="co-row"><span>Risk:Reward</span><b id="coRR">—</b></div>
+        <div class="co-row"><span>$ at Risk</span><b class="bear" id="coDR">—</b></div>
+        <div class="co-row"><span>$ Reward</span><b class="bull" id="coDRw">—</b></div>
       </div>
-    </section>
+    </div>
 
     <!-- PERFORMANCE -->
-    <section class="card perf-card">
-      <div class="card-header">
-        <h2>Performance</h2>
-        <div class="perf-period-selector">
-          <button class="pp-btn active" data-period="daily">Day</button>
-          <button class="pp-btn" data-period="weekly">Week</button>
-          <button class="pp-btn" data-period="monthly">Month</button>
+    <div class="card">
+      <div class="card-title">
+        Performance
+        <div class="perf-tabs">
+          <button class="ptab active" data-p="daily">Day</button>
+          <button class="ptab" data-p="weekly">Week</button>
+          <button class="ptab" data-p="monthly">Month</button>
         </div>
       </div>
-      <div class="perf-grid">
-        <div class="perf-stat">
-          <div class="ps-value bull" id="perfWins">0</div>
-          <div class="ps-label">Wins</div>
-        </div>
-        <div class="perf-stat">
-          <div class="ps-value bear" id="perfLosses">0</div>
-          <div class="ps-label">Losses</div>
-        </div>
-        <div class="perf-stat">
-          <div class="ps-value gold" id="perfWinRate">0%</div>
-          <div class="ps-label">Win Rate</div>
-        </div>
-        <div class="perf-stat">
-          <div class="ps-value" id="perfPnL">$0.00</div>
-          <div class="ps-label">Net P&amp;L</div>
-        </div>
+      <div class="perf-stats">
+        <div class="ps"><div class="ps-val bull" id="pWins">0</div><div class="ps-lbl">Wins</div></div>
+        <div class="ps"><div class="ps-val bear" id="pLoss">0</div><div class="ps-lbl">Losses</div></div>
+        <div class="ps"><div class="ps-val" id="pWR">0%</div><div class="ps-lbl">Win Rate</div></div>
+        <div class="ps"><div class="ps-val" id="pPnL">$0</div><div class="ps-lbl">P&amp;L</div></div>
       </div>
-      <div class="pnl-chart-wrap">
-        <canvas id="pnlChart" height="80"></canvas>
-      </div>
-    </section>
+      <canvas id="pnlChart" height="70"></canvas>
+    </div>
 
   </div>
+</div>
 
-</main>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
-
 <script src="script.js"></script>
 </body>
 </html>
